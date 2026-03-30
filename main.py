@@ -8,7 +8,14 @@ df = pd.read_csv("dataset.csv")
 X = df[["distance", "angle", "pressure"]]
 y = df["goal"]
 
-# 3rd step:- Train model
+# 3rd step:- Scaling and training
+
+from sklearn.preprocessing import StandardScaler
+
+# Scale features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
 model = LogisticRegression()
 model.fit(X, y)
 
@@ -23,12 +30,20 @@ angle = float(input("Enter angle (in degrees): "))
 pressure = int(input("Enter pressure (0 = low, 1 = medium, 2 = high): "))
 
 # 6th step:- Prediction
-input_data = pd.DataFrame([[distance, angle, pressure]],
-                          columns=["distance", "angle", "pressure"])
+input_df = pd.DataFrame({
+    "distance": [distance],
+    "angle": [angle],
+    "pressure": [pressure]
+})
 
-prediction = model.predict(input_data)
-probability = model.predict_proba(input_data)[0][1]
+# Scale input
+input_scaled = scaler.transform(input_df)
 
+# Convert back to DataFrame with same column names
+input_scaled_df = pd.DataFrame(input_scaled, columns=X.columns)
+
+prediction = model.predict(input_scaled_df)
+probability = model.predict_proba(input_scaled_df)[0][1]
 # 7th step:- Difficulty classification
 if probability > 0.7:
     difficulty = "Easy Chance 🟢"

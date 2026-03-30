@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.linear_model import LogisticRegresison
+from sklearn.linear_model import LogisticRegression
 
 # 1st step:- Load dataset
 df = pd.read_csv("dataset.csv")
